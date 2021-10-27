@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SebastiaanLuca\Module\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class CreateModule extends Command
@@ -64,7 +65,11 @@ class CreateModule extends Command
 
         $provider = str_replace('Dummy', $name, $provider);
 
-        file_put_contents(sprintf('%s/%sServiceProvider.php', $path, $name), $provider);
+        $target = sprintf('%s/%sServiceProvider.php', $path, $name);
+        
+        File::ensureDirectoryExists(dirname($target));
+
+        file_put_contents($target, $provider);
 
         $this->info(sprintf(
             '%s module created!',
